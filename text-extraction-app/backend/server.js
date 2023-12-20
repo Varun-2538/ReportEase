@@ -2,17 +2,19 @@ const express = require('express');
 const multer = require('multer');
 const pdfParse = require('pdf-parse');
 const Tesseract = require('tesseract.js');
-const fs = require('fs');
+const cors = require('cors');
 
 const app = express();
 const port = 3000;
 
-// Set up multer for handling file uploads
+// Enable CORS
+app.use(cors());
+
+// Multer configuration for handling file uploads
 const storage = multer.memoryStorage();
 const upload = multer({ storage: storage });
 
-app.use(express.static('public'));
-
+// Route for extracting text from a PDF or image
 app.post('/extract-text', upload.single('file'), async (req, res) => {
     try {
         if (!req.file) {
@@ -21,7 +23,6 @@ app.post('/extract-text', upload.single('file'), async (req, res) => {
 
         const fileBuffer = req.file.buffer;
         const fileType = req.file.mimetype;
-
         let text;
 
         if (fileType === 'application/pdf') {
@@ -38,7 +39,7 @@ app.post('/extract-text', upload.single('file'), async (req, res) => {
 
         res.status(200).json({ text });
     } catch (error) {
-        console.error(error);
+        console.error('Error during text extraction:', error);
         res.status(500).send('Internal Server Error');
     }
 });

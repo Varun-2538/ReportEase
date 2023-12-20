@@ -43,10 +43,10 @@
                 .then(response => response.json())
                 .then(data => {
                     outputDiv.innerHTML = `<p>Text extracted:</p>`;
-                    outputDiv.innerHTML += `<pre>${data.text}</pre>`;
+                    outputDiv.innerHTML += `<pre>${data.text}</pre>`; // Access the extracted text
                 })
                 .catch(error => {
-                    console.error(error);
+                    console.error('Error during text extraction:', error);
                     outputDiv.innerHTML = '<p>An error occurred during text extraction.</p>';
                 });
             } else {
