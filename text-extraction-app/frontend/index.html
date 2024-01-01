@@ -30,12 +30,12 @@
         function extractText() {
             const fileInput = document.getElementById('fileInput');
             const outputDiv = document.getElementById('output');
-
+        
             if (fileInput.files.length > 0) {
                 const file = fileInput.files[0];
                 const formData = new FormData();
                 formData.append('file', file);
-
+        
                 fetch('http://localhost:3000/extract-text', {
                     method: 'POST',
                     body: formData,
@@ -44,6 +44,15 @@
                 .then(data => {
                     outputDiv.innerHTML = `<p>Text extracted:</p>`;
                     outputDiv.innerHTML += `<pre>${data.text}</pre>`; // Access the extracted text
+        
+                    // Create a downloadable link
+                    const downloadLink = document.createElement('a');
+                    downloadLink.href = `data:text/plain;charset=utf-8,${encodeURIComponent(data.text)}`;
+                    downloadLink.download = 'extracted_text.txt';
+                    downloadLink.textContent = 'Download Text';
+        
+                    // Append the link to the outputDiv
+                    outputDiv.appendChild(downloadLink);
                 })
                 .catch(error => {
                     console.error('Error during text extraction:', error);
@@ -53,6 +62,7 @@
                 alert('Please select a PDF or image file.');
             }
         }
+        
     </script>
 </body>
 </html>
