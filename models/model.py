@@ -18,3 +18,25 @@ def generate(
     prompt, temperature=0.4, max_new_tokens=512, top_p=0.95, repetition_penalty=1.0,     
 ):
     temperature = float(temperature)
+    if temperature <1e-2:
+        temperature = 1e-2
+    top_p = float(top_p)
+
+    generate_kwargs = dict(
+        temperature=temperature,
+        max_new_tokens=max_new_tokens,
+        top_p=top_p,
+        repetition_penalty=repetition_penalty,
+        do_sample=True,
+        seed=42,
+    )
+
+    correct_prompt = prompter(prompt)
+
+    stream = model.text_generation(correct_prompt, **generate_kwargs, stream=True, details=True, return_full_text=False)
+    output = ""
+
+    for answer in model:
+        output += answer.token.text
+
+    return output
