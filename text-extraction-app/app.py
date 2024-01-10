@@ -2,33 +2,40 @@ import os
 import csv
 import re
 import pandas as pd
-from flask import Flask, request, jsonify, render_template, redirect, url_for, flash
+from flask import Flask, request, jsonify, render_template, redirect, url_for, flash, send_from_directory
+from flask_cors import CORS
 from model import generate  # Import the generate function from another module
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='frontend/text-extraction-app/build')
+CORS(app)
 
-@app.route("/")
-def index():
-    return render_template("index.html")
-# def load_ipc_dataset():
-#     """
-#     Loads the IPC dataset from a CSV file.
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
 
-#     Returns:
-#         A list of data rows (as lists) if the file is found, otherwise an error message.
-#     """
+def load_ipc_dataset():
+    """
+    Loads the IPC dataset from a CSV file.
 
-#     dataset_filepath = "text-extraction-app/resources/dataset.txt"
+    Returns:
+        A list of data rows (as lists) if the file is found, otherwise an error message.
+    """
 
-#     try:
-#         with open(dataset_filepath, "r", encoding="utf-8") as csvfile:
-#             csv_reader = csv.reader(csvfile)
-#             headers = next(csv_reader)  # Store the headers for potential use later
-#             dataset_data = list(csv_reader)
-#             return dataset_data
+    dataset_filepath = "resources/fir-ipc_dataset.csv"
 
-#     except FileNotFoundError:
-#         return "Can't find dataset, please try again"
+    try:
+        with open(dataset_filepath, "r", encoding="utf-8") as csvfile:
+            csv_reader = csv.reader(csvfile)
+            headers = next(csv_reader)  # Store the headers for potential use later
+            dataset_data = list(csv_reader)
+            return dataset_data
+
+    except FileNotFoundError:
+        return "Can't find dataset, please try again"
 
 
 # def process_crime():
