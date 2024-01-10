@@ -3,6 +3,7 @@ const multer = require('multer');
 const Tesseract = require('tesseract.js');
 const PDFParser = require('pdf-parse');
 const cors = require('cors');
+const axios = require('axios'); // Add this line to use axios
 const app = express();
 const port = 3000;
 
@@ -33,6 +34,14 @@ app.post('/extract', upload.single('file'), async (req, res) => {
             const tesseractData = await Tesseract.recognize(buffer, 'eng+hin', { logger: m => console.log(m) });
             text = tesseractData.data.text;
         }
+
+        // Send the extracted text to the Flask API
+        const flaskResponse = await axios.post(
+            "http://localhost:5000/suggest_ipc", // Replace with your Flask server URL
+            { extracted_text: text }
+        );
+
+        console.log("IPC Suggestions:", flaskResponse.data.ipc_suggestions);
 
         res.json({ result: text });
     } catch (error) {
