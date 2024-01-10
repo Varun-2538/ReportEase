@@ -2,14 +2,21 @@ import os
 import csv
 import re
 import pandas as pd
-from flask import Flask, request, jsonify, render_template, redirect, url_for, flash
+from flask import Flask, request, jsonify, render_template, redirect, url_for, flash, send_from_directory
+from flask_cors import CORS
 from model import generate  # Import the generate function from another module
 
-app = Flask(__name__)
+app = Flask(__name__, static_folder='frontend/text-extraction-app/build')
+CORS(app)
 
-@app.route("/")
-def index():
-    return render_template("index.html")
+@app.route('/', defaults={'path': ''})
+@app.route('/<path:path>')
+def serve(path):
+    if path != "" and os.path.exists(app.static_folder + '/' + path):
+        return send_from_directory(app.static_folder, path)
+    else:
+        return send_from_directory(app.static_folder, 'index.html')
+
 def load_ipc_dataset():
     """
     Loads the IPC dataset from a CSV file.
