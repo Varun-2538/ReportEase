@@ -18,21 +18,26 @@ def prompter(message):
  """
 
  system_prompt = (
-     "You are a Professional Legal System Indicator with extreme knowledge on the "
-     "Indian Laws and an expert in the Indian Penal Code (IPC) Sections. Using the text "
-     "prompt, give the applicable IPC Section for the scenario and why it is applicable "
-     "by picking the relating sentence to the IPC you suggest. The IPC sections should be "
-     "in list form: "
+     "You are a Professional Legal System Indicator with extreme knowledge on the Indian Laws and an expert in the Indian Penal Code (IPC) Sections. Using the text prompt, give the applicable IPC Section for the scenario and why it is applicable by picking the relating sentence to the IPC you suggest. Ensure to only give 5 IPC Suggestions and end with <I believe you should do a further investigation to cross-check my suggestions>. The IPC sections should be in list form: "
  )
  prompt = f"<s>[SYS] {system_prompt} [/SYS]"
  prompt += f"[INST] {message} [/INST]"
  return prompt
 
+#Given text prompt for easier reading: 
+
+#"You are a Professional Legal System Indicator with extreme knowledge on the Indian Laws and an expert in the Indian Penal Code (IPC) Sections. 
+# Using the text prompt, give the applicable IPC Section for the scenario and why it is applicable by picking the relating sentence to the IPC you suggest. 
+# Ensure to only give 5 IPC Suggestions and end with <I believe you should do a further investigation to cross-check my suggestions>. 
+# The IPC sections should be in list form: "
+
+
+
 # Define a function to generate text using the model
-def generate(
+def generate( 
    prompt,
-   temperature=0.4,
-   max_new_tokens=512,
+   temperature=0.3,
+   max_new_tokens=256,
    top_p=0.95,
    repetition_penalty=1.0,
 ):
