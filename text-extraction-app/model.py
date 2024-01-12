@@ -4,7 +4,7 @@ import gradio as grad
 import os  # For creating interactive web interfaces (not used in this code snippet)
 
 # Load the Mistral-8x7B-Instruct-v0.1 model from Hugging Face Hub
-model = InferenceClient("mistralai/Mixtral-8x7B-Instruct-v0.1", token=os.environ['HF_TOKEN'])
+model = InferenceClient("mistralai/Mixtral-8x7B-Instruct-v0.1")
 
 # Define a function to format prompts for the model
 def prompter(message):
@@ -37,9 +37,9 @@ def prompter(message):
 # Define a function to generate text using the model
 def generate( 
    prompt,
-   temperature=0.4,
+   temperature=0.2,
    max_new_tokens=512,
-   top_p=0.95,
+   top_p=0.96,
    repetition_penalty=1.0,
 ):
  """
