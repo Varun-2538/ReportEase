@@ -40,12 +40,19 @@ function App() {
         { extracted_text: response.data.result }
       );
 
-      // Check if ipcResponse.data.ipc_suggestions is an array before setting state
-      
-      setIpcSuggestions(ipcResponse.data.ipc_suggestions);
+      //Ensure ipcResponse.data.ipc_suggestions is an array
+      let suggestions = ipcResponse.data.ipc_suggestions;
+      if (typeof suggestions === "string") {
+        suggestions = suggestions
+          .split(/\d+\./)
+          .slice(1)
+          .map((s) => s.trim())
+          .filter((s) => s);
+      }
+      setIpcSuggestions(suggestions);
     } catch (error) {
       console.error(error);
-      alert("An error occurred.");
+      alert("An error occured");
     }
 
     setUploading(false);
@@ -88,7 +95,7 @@ function App() {
         <div className="card w-100 mt-4">
           <div className="card-body">
             <h2 className="card-title">Extracted Text:</h2>
-            <div className="overflow-auto" style={{ maxHeight: "400px" }}>
+            <div className="overflow-auto" style={{ maxHeight: "200px" }}>
               <pre className="card-text">{result}</pre>
             </div>
           </div>
@@ -97,9 +104,11 @@ function App() {
       {ipcSuggestions.length > 0 && (
         <div className="card w-100 mt-4">
           <div className="card-body">
-            <h2 className="card-title">IPC Suggestions:</h2>
+            <h2 className="card-title">IPC Suggestions with reasons:</h2>
             <ul>
-              {ipcSuggestions}
+              {ipcSuggestions.map((suggestion, index) => (
+                <li key={index}>{suggestion}</li>
+              ))}
             </ul>
           </div>
         </div>
