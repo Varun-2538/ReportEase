@@ -37,9 +37,9 @@ def prompter(message):
 # Define a function to generate text using the model
 def generate( 
    prompt,
-   temperature=0.4,
+   temperature=0.2,
    max_new_tokens=512,
-   top_p=0.95,
+   top_p=0.96,
    repetition_penalty=1.0,
 ):
  """
