@@ -1,8 +1,6 @@
 huggingface_hub
 gradio
 pandas
-# os 
-# re
-# csv
-# pillow
 flask
+flask_cors
+subprocess.run
