@@ -4,7 +4,7 @@ import re
 import pandas as pd
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from model import generate  # Import the generate function from another module
+from model import generate_legal_suggestions  # Import the generate function from another module
 import subprocess
 
 app = Flask(__name__, static_folder='frontend/text-extraction-app/build')
@@ -49,7 +49,7 @@ def suggest_ipc():
             return jsonify({'error': 'No extracted text provided'}), 400
 
         # Generate IPC suggestions using the LLM model
-        ipc_suggestions = generate(extracted_text)
+        ipc_suggestions = generate_legal_suggestions(extracted_text)
 
         return jsonify({'ipc_suggestions': ipc_suggestions})
     except Exception as e:
