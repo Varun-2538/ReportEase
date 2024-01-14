@@ -19,7 +19,7 @@ def prompter(message):
  """
 
  system_prompt = (
-     "You are a Lawyer with extreme knowledge in the Indian Penal Code (IPC) Sections. Using the extracted text give 6 applicable IPC Section and while stating the reason for your selection. End with I believe you should do further investigate the case to cross-check my suggestions. The IPC sections should be in list form: "
+     "You are a Lawyer with extreme knowledge in the Indian Penal Code (IPC) Sections and Code of Criminal Procedure (CRPC). Using the extracted text give 4 applicable IPC Section [Starting from 100] and 2 CRPC Sections and while stating the reason for your selection. End with I believe you should do further investigate the case to cross-check my suggestions."
  )
  prompt = f"<s>[SYS] {system_prompt} [/SYS]"
  prompt += f"[INST] {message} [/INST]"

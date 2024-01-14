@@ -106,9 +106,17 @@ function App() {
           <div className="card-body">
             <h2 className="card-title">IPC Suggestions with reasons:</h2>
             <ul>
-              {ipcSuggestions.map((suggestion, index) => (
-                <li key={index}>{suggestion}</li>
-              ))}
+              {ipcSuggestions.map((suggestion, index) => {
+                // Split the suggestion into the IPC Section and the rest of the text
+                const [ipcSection, ...restOfSuggestion] =
+                  suggestion.split(" - ");
+                return (
+                  <li key={index}>
+                    <strong>{ipcSection}</strong> -{" "}
+                    {restOfSuggestion.join(" - ")}
+                  </li>
+                );
+              })}
             </ul>
           </div>
         </div>
