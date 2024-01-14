@@ -2,7 +2,7 @@ import os
 import csv
 import re
 import pandas as pd
-from flask import Flask, request, jsonify, render_template, redirect, url_for, flash, send_from_directory
+from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
 from model import generate  # Import the generate function from another module
 import subprocess

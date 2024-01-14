@@ -1,66 +1,76 @@
-const express = require("express");
-const multer = require("multer");
-const Tesseract = require("tesseract.js");
-const PDFParser = require("pdf-parse");
-const cors = require("cors");
-const axios = require("axios"); // Add this line to use axios
+const express = require('express');
+const multer = require('multer');
+const cors = require('cors');
+const fs = require('fs');
+const path = require('path');
+const pdfPoppler = require('pdf-poppler');
+const Tesseract = require('tesseract.js');
+
 const app = express();
+const upload = multer({ dest: 'uploads/' });
+app.use(cors());
 const port = 3000;
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
-app.use(cors({ origin: "*" }));
+// Function to extract text from PDF using Tesseract
+async function extractTextFromPDF(pdfPath, outputDirectory) {
+    let opts = {
+        format: 'png',
+        out_dir: outputDirectory,
+        out_prefix: path.basename(pdfPath, path.extname(pdfPath)),
+        dpi: 300
+    };
 
-// Setup multer for file handling
-const storage = multer.memoryStorage();
-const upload = multer({ storage: storage });
+    await pdfPoppler.convert(pdfPath, opts);
 
-app.post("/extract", upload.single("file"), async (req, res) => {
-  if (!req.file) {
-    res.status(400).send("No file uploaded.");
-    return;
-  }
+    const files = fs.readdirSync(outputDirectory);
+    let allText = '';
 
-  try {
-    const buffer = req.file.buffer;
-    let text = "";
-
-    if (req.file.mimetype === "application/pdf") {
-      // Extract text from PDF
-      const pdfData = await PDFParser(buffer);
-      text = pdfData.text;
-    } else {
-      // Extract text from images (Hindi and English)
-      const tesseractData = await Tesseract.recognize(buffer, "eng+hin", {
-        logger: (m) => console.log(m),
-      });
-      text = tesseractData.data.text;
+    for (let file of files) {
+        if (file.includes(path.basename(pdfPath, path.extname(pdfPath)))) {
+            const outputImagePath = path.join(outputDirectory, file);
+            const { data: { text } } = await Tesseract.recognize(outputImagePath, 'eng+hin');
+            allText += text + '\n';
+            fs.unlinkSync(outputImagePath);
+        }
     }
 
-    // Send the extracted text to the Flask API
+    return allText;
+}
+
+app.post('/extract', upload.single('file'), async (req, res) => {
+    if (!req.file) {
+        return res.status(400).send('No file uploaded.');
+    }
+
+    const fileExtension = path.extname(req.file.originalname).toLowerCase();
+    const pdfPath = req.file.path;
+    const outputDirectory = path.join(__dirname, 'output');
+
+    if (!fs.existsSync(outputDirectory)) {
+        fs.mkdirSync(outputDirectory, { recursive: true });
+    }
+
+    let extractedText = '';
+
     try {
-      const flaskResponse = await axios.post(
-        "http://127.0.0.1:5000/suggest_ipc", // Replace with your Flask server URL
-        { extracted_text: text }
-      );
+        if (fileExtension === '.pdf') {
+            extractedText = await extractTextFromPDF(pdfPath, outputDirectory);
+        } else if (['.jpg', '.jpeg', '.png'].includes(fileExtension)) {
+            // If it's an image, perform OCR directly on the image
+            const { data: { text } } = await Tesseract.recognize(pdfPath, 'eng+hin');
+            extractedText = text;
+        } else {
+            return res.status(400).send('Unsupported file format.');
+        }
 
-      console.log("IPC Suggestions:", flaskResponse.data.ipc_suggestions);
+        res.json({ result: extractedText });
+        fs.unlinkSync(pdfPath);
     } catch (error) {
-      console.error(error.message);
-      res.status(500).send({ result: error.message });
+        console.error('Error occurred:', error);
+        res.status(500).send('Internal Server Error');
     }
-
-    res.json({ result: text });
-  } catch (error) {
-    console.error(error.message);
-    res.status(500).send({ result: error.message });
-  }
-});
-
-app.get("/", (req, res) => {
-  res.send("Text Extraction Service");
 });
 
 app.listen(port, () => {
-  console.log(`Server listening on port ${port}`);
+    console.log(`Server running on http://localhost:${port}`);
 });
