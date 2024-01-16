@@ -5,13 +5,14 @@ const fs = require('fs');
 const path = require('path');
 const pdfPoppler = require('pdf-poppler');
 const Tesseract = require('tesseract.js');
+const axios = require('axios');
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 app.use(cors());
 const port = 3000;
 
-// Function to extract text from PDF using Tesseract
+// Function to extract text from PDF using Tesseract with parallel processing
 async function extractTextFromPDF(pdfPath, outputDirectory) {
     let opts = {
         format: 'png',
@@ -23,20 +24,22 @@ async function extractTextFromPDF(pdfPath, outputDirectory) {
     await pdfPoppler.convert(pdfPath, opts);
 
     const files = fs.readdirSync(outputDirectory);
-    let allText = '';
-
-    for (let file of files) {
-        if (file.includes(path.basename(pdfPath, path.extname(pdfPath)))) {
+    const ocrPromises = files
+        .filter(file => file.includes(path.basename(pdfPath, path.extname(pdfPath))))
+        .map(file => {
             const outputImagePath = path.join(outputDirectory, file);
-            const { data: { text } } = await Tesseract.recognize(outputImagePath, 'eng+hin');
-            allText += text + '\n';
-            fs.unlinkSync(outputImagePath);
-        }
-    }
+            return Tesseract.recognize(outputImagePath, 'eng+hin')
+                .then(result => {
+                    fs.unlinkSync(outputImagePath); // Delete image after processing
+                    return result.data.text;
+                });
+        });
 
-    return allText;
+    const ocrResults = await Promise.all(ocrPromises);
+    return ocrResults.join('\n');
 }
 
+// Endpoint to handle file upload and text extraction
 app.post('/extract', upload.single('file'), async (req, res) => {
     if (!req.file) {
         return res.status(400).send('No file uploaded.');
@@ -50,24 +53,36 @@ app.post('/extract', upload.single('file'), async (req, res) => {
         fs.mkdirSync(outputDirectory, { recursive: true });
     }
 
-    let extractedText = '';
-
     try {
+        let extractedText = '';
+
         if (fileExtension === '.pdf') {
             extractedText = await extractTextFromPDF(pdfPath, outputDirectory);
         } else if (['.jpg', '.jpeg', '.png'].includes(fileExtension)) {
-            // If it's an image, perform OCR directly on the image
             const { data: { text } } = await Tesseract.recognize(pdfPath, 'eng+hin');
             extractedText = text;
         } else {
             return res.status(400).send('Unsupported file format.');
         }
 
-        res.json({ result: extractedText });
-        fs.unlinkSync(pdfPath);
+        // Send the extracted text to the Flask API (if needed)
+        try {
+            const flaskResponse = await axios.post(
+                "http://127.0.0.1:5000/suggest_ipc", // Replace with your Flask server URL
+                { extracted_text: extractedText }
+            );
+
+            console.log("IPC Suggestions:", flaskResponse.data.ipc_suggestions);
+            res.json({ result: extractedText, ipcSuggestions: flaskResponse.data.ipc_suggestions });
+        } catch (error) {
+            console.error(error.message);
+            res.status(500).send({ result: error.message });
+        }
     } catch (error) {
         console.error('Error occurred:', error);
         res.status(500).send('Internal Server Error');
+    } finally {
+        fs.unlinkSync(pdfPath); // Cleanup the uploaded PDF
     }
 });
 
