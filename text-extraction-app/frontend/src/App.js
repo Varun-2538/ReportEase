@@ -1,19 +1,13 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Home from './Home';
-import ResultPage from './ResultPage';
+import React, { useState } from "react";
+import "./App.css";
+import Routing from "./Routing.js";
 
-const App = () => {
+
+function App() {
   return (
-    <Router>
-      <div>
-      <Routes>
-  <Route path="/" element={<Home />} />
-  <Route path="/result" element={<ResultPage />} /> {/* Make sure this route exists */}
-</Routes>
-    
-      </div>
-    </Router>
+    <>
+      <Routing />
+    </>
   );
 }
 
