@@ -1,9 +1,6 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Papa from "papaparse";
-import Navbar from "./Navbar";
-
-
 
 const DataDisp = () => {
   const location = useLocation();
@@ -44,9 +41,12 @@ const DataDisp = () => {
   };
 
   return (
-    <div className="bg-gray-900 p-4  shadow-md">
-      
-      <h1 className="text-3xl font-normal text-white px-4">
+    <div className="bg-gray-900 px-36  shadow-md">
+      <p className="text-xl font-bold mb-16 pt-3 text-orange-500 ">
+        ReportEase
+      </p>
+
+      <h1 className="text-3xl font-normal text-white ">
         Text Extraction Results
       </h1>
 
@@ -75,35 +75,47 @@ const DataDisp = () => {
       )}
 
       {/* Criminal Records Search */}
-      <div className="mt-4 bg-gray-850 p-4 rounded-md shadow-md">
-        <h2 className="text-xl font-semibold text-white">
+      <div className="mt-4 bg-gray-800 p-6 rounded-lg shadow-lg space-y-4">
+        <h2 className="text-2xl font-semibold text-white">
           Criminal Records Search:
         </h2>
-        <div>
-          <label className="text-white">Name: </label>
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="name" className="text-white font-medium">
+            Name:
+          </label>
           <input
+            id="name"
             type="text"
             value={name}
             onChange={(e) => setName(e.target.value)}
+            className="p-2 rounded-md text-gray-700 w-full md:w-1/2 lg:w-1/3"
+            placeholder="Enter name here"
           />
         </div>
-        <div>
-          <label className="text-white">Aadhar Card: </label>
+        <div className="flex flex-col space-y-2">
+          <label htmlFor="aadharCard" className="text-white font-medium">
+            Aadhar Card:
+          </label>
           <input
+            id="aadharCard"
             type="text"
             value={aadharCard}
             onChange={(e) => setAadharCard(e.target.value)}
+            className="p-2 rounded-md text-gray-700 w-full md:w-1/2 lg:w-1/3"
+            placeholder="Enter Aadhar Card number"
           />
         </div>
         <button
-          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
           onClick={handleSearch}
         >
           Search Records
         </button>
-        <div>
-          <h2 className="text-xl font-semibold text-white">Criminal Record:</h2>
-          <p className="text-white">{criminalRecord}</p>
+        <div className="pt-4">
+          <h2 className="text-2xl font-semibold text-white">
+            Criminal Record:
+          </h2>
+          <p className="text-white mt-2">{criminalRecord}</p>
         </div>
       </div>
     </div>
