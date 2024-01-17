@@ -155,7 +155,7 @@ function Homepage() {
         <div className="px-36">
           <div className="mt-20 mb-6">
             <h1 className="text-left text-slate-200 text-3xl font-normal">
-              Crime-Analytics
+              Crime-Analytics Based on CCTNS Data
             </h1>
             <h1 className="text-left text-slate-400 text-md font-light">
               Finding Patterns...
