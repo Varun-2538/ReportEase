@@ -2,7 +2,7 @@ import React from 'react'
 
 const SupportCenterSection = () => {
   return (
-    <div className="bg-gray-900 text-white mt-22 mb-4 px-18 py-4">
+    <div id="about" className="bg-gray-900 text-white mt-22 mb-4 px-18 py-4">
       <div className="w-5/6 mx-auto">
         <h1 className="text-4xl font-normal mb-4 px-4">About Us</h1>
         <div className="flex items-center">
@@ -20,11 +20,11 @@ const SupportCenterSection = () => {
           </div>
           <div className="flex-1">
             <iframe
-              className="rounded-md"
+              className="rounded-md shadow-x1"
               width="560"
               height="315"
-              src="https://www.youtube.com/embed/VIDEO_ID" // Replace VIDEO_ID with your YouTube video ID
-              title="YouTube video"
+              src="https://www.youtube.com/embed/-RQq6KtFvuI" // Use the correct embed URL format
+              title="Working of ReportEase"
               frameBorder="0"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen

@@ -6,25 +6,25 @@ const Navbar = () => {
       <div className="font-bold text-xl text-orange-500">ReportEase</div>
       <div className="flex">
         <a
-          href="<SupportCenterSection />"
+          href="#about"
           className="text-white px-3 py-2 rounded-md text-sm font-medium"
         >
           About
         </a>
         <a
-          href="/faqs"
+          href="#FAQ"
           className="text-white px-3 py-2 rounded-md text-sm font-medium"
         >
           FAQs
         </a>
         <a
-          href="/analytics"
+          href="#analytics"
           className="text-white px-3 py-2 rounded-md text-sm font-medium"
         >
           Analytics
         </a>
         <a
-          href="/developers"
+          href="#developers"
           className="text-white px-3 py-2 rounded-md text-sm font-medium"
         >
           Developers

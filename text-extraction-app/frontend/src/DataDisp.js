@@ -53,7 +53,7 @@ const DataDisp = () => {
   };
 
   return (
-    <div className="bg-gray-900 px-36  shadow-md">
+    <div  className="bg-gray-900 px-36  shadow-md">
       <p className="text-xl font-bold mb-16 pt-3 text-orange-500 ">
         ReportEase
       </p>

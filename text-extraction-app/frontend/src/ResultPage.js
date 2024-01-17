@@ -69,6 +69,7 @@ const ResultPage = () => {
       {/* Criminal Records Search */}
       <div className="mt-4 bg-gray-850 p-4 rounded-md shadow-md">
         <h2 className="text-xl font-semibold text-white">Criminal Records Search:</h2>
+        <p>Dummy CCTNS</p>
         <div>
           <label className="text-white">Name: </label>
           <input

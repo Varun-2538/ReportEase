@@ -2,7 +2,7 @@ import React from 'react'
 
 const FAQs = () => {
     return (
-        <div className="bg-gray-900 px-36 py-10">
+        <div id="FAQ" className="bg-gray-900 px-36 py-10">
             <h2 className="text-3xl text-white mb-6">Frequently asked questions</h2>
             <div>
                 {faqs.map((faq, index) => (
@@ -42,7 +42,7 @@ const FAQItem = ({ faq }) => {
     const [isOpen, setIsOpen] = React.useState(false);
 
     return (
-        <div className="border-b border-gray-700">
+        <div  className="border-b border-gray-700">
             <button
                 className="flex justify-between items-center w-full py-5 text-left"
                 onClick={() => setIsOpen(!isOpen)}

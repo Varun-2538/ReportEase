@@ -21,11 +21,7 @@ function Homepage() {
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [generate, setGenerate] = useState(false);
-  const [infoModalVisible, setInfoModalVisible] = useState(false);
-
-  const toggleInfoModal = () => {
-    setInfoModalVisible(!infoModalVisible);
-  };
+  
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -159,15 +155,11 @@ function Homepage() {
         )}
 
         <div className="px-36">
-          <div className="mt-20 mb-6 flex items-center">
+          <div id="analytics" className="mt-20 mb-6 flex items-center">
             <h1 className="text-left text-slate-200 text-3xl font-normal">
               Crime-Analytics
             </h1>
             {/* Use InfoTooltip for the "i" button */}
-            
-              
-              
-            
           </div>
           <h1 className="text-left text-slate-400 text-md font-light">
             Finding Patterns...
