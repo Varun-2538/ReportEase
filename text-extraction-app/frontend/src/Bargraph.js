@@ -35,8 +35,8 @@ function Bargraph(props) {
     };
 
 
-    const labels = ["Robbery","Murder","Assault","Human-Trafficking","Drunk-Driving","Speeding","Cyber-Crime"];
-    const Xdata = [1200,248,349,168,891,549,1602];
+    const labels = ["Theft","Burglary","Robbery","Assault","Homicide","Drug Possession","Shoplifting","Vandalism","Fraud","Identity","Cybercrime","Domestic Violence","Kidnapping","Arson","Carjacking","Embezzlement","Forgery","Disorderly Conduct","Stalking","Public Intoxication"];
+    const Xdata = [1200,248,349,168,891,549,1602,1200,248,349,168,891,549,1602,1200,248,349,168,891,549];
 
 
     const data = {
