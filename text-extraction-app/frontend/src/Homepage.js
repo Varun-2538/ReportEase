@@ -11,6 +11,9 @@ import { NavLink } from "react-router-dom";
 import { ProgressBar } from "react-loader-spinner";
 import Navbar from "./Navbar.js";
 
+
+
+
 function Homepage() {
   const [file, setFile] = useState(null);
   const [result, setResult] = useState("");
@@ -18,6 +21,11 @@ function Homepage() {
   const [uploading, setUploading] = useState(false);
   const [loading, setLoading] = useState(false);
   const [generate, setGenerate] = useState(false);
+  const [infoModalVisible, setInfoModalVisible] = useState(false);
+
+  const toggleInfoModal = () => {
+    setInfoModalVisible(!infoModalVisible);
+  };
 
   const handleFileChange = (e) => {
     setFile(e.target.files[0]);
@@ -77,8 +85,6 @@ function Homepage() {
     <>
       <Navbar />
       <div className="main min-h-lvh">
-        
-
         <div className="grid grid-cols-4 px-36 pt-20">
           <div className="col-span-2 mb-12">
             <p className="text-7xl text-white font-semibold">
@@ -153,14 +159,19 @@ function Homepage() {
         )}
 
         <div className="px-36">
-          <div className="mt-20 mb-6">
+          <div className="mt-20 mb-6 flex items-center">
             <h1 className="text-left text-slate-200 text-3xl font-normal">
               Crime-Analytics
             </h1>
-            <h1 className="text-left text-slate-400 text-md font-light">
-              Finding Patterns...
-            </h1>
+            {/* Use InfoTooltip for the "i" button */}
+            
+              
+              
+            
           </div>
+          <h1 className="text-left text-slate-400 text-md font-light">
+            Finding Patterns...
+          </h1>
 
           <div className="pb-8 grid gap-2 xl:grid-cols-2 md:grid-cols-1">
             <div className="p-4 w-full shadow-lg rounded-lg bg-gray-900">
@@ -173,7 +184,6 @@ function Homepage() {
             </div>
           </div>
         </div>
-
 
         <SupportCenterSection />
         <FAQs />

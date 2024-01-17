@@ -13,6 +13,18 @@ const DataDisp = () => {
   const [aadharCard, setAadharCard] = useState("");
   const [criminalRecord, setCriminalRecord] = useState("");
 
+  const formatCriminalRecord = (record) => {
+    // Split the record using the literal string "\n" instead of the line break character
+    const lines = record.split("\\n");
+    return lines.map((line, idx) => (
+      <li key={idx} className="list-disc list-inside">
+        {line}
+      </li>
+    ));
+  };
+
+
+
   const handleSearch = () => {
     // Trim leading and trailing spaces from input values
     const trimmedName = name.trim();
@@ -115,7 +127,14 @@ const DataDisp = () => {
           <h2 className="text-2xl font-semibold text-white">
             Criminal Record:
           </h2>
-          <p className="text-white mt-2">{criminalRecord}</p>
+          {/* Display criminalRecord with bullet points if it contains line breaks */}
+          {criminalRecord.includes("\n") ? (
+            <ul className="text-white">
+              {formatCriminalRecord(criminalRecord)}
+            </ul>
+          ) : (
+            <p className="text-white mt-2">{criminalRecord}</p>
+          )}
         </div>
       </div>
     </div>
