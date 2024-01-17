@@ -7,8 +7,8 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 function Doughnuts(props) {
 
 
-    const labels = ["Theft","Assault","Homicide","Drug Possession","Shoplifting","Vandalism","Identity","Cybercrime","Domestic Violence","Kidnapping","Arson","Carjacking","Embezzlement","Forgery","Disorderly Conduct","Stalking","Public Intoxication"];
-    const Xdata = [1200,168,891,549,1602,1200,349,168,891,549,1602,1200,248,349,168,891,549];
+    const labels = ["Theft","Homicide","Drug Possession","Shoplifting","Vandalism","Domestic Violence","Kidnapping","Arson","Carjacking"];
+    const Xdata = [1200,891,549,1602,1200,891,549,1602,1200];
 
 
     const data = {
