@@ -57,7 +57,8 @@ def suggest_ipc():
 
     
 if __name__ == '__main__':
-    app.run(debug=True)
-
-# TODO: add routing to files, probably with flask. 
-# TODO: Also uncomment IPC_Sections generation after filepath cleanup
+    app.run(
+        debug=os.getenv('FLASK_DEBUG', 'False') == 'True',  # Default to False if not set
+        host='0.0.0.0',
+        port=int(os.getenv('PORT', 5000))  # Default to 5000 if not set
+    )
