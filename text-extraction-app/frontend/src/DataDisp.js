@@ -1,6 +1,9 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Papa from "papaparse";
+import Navbar from "./Navbar";
+
+
 
 const DataDisp = () => {
   const location = useLocation();
@@ -41,12 +44,17 @@ const DataDisp = () => {
   };
 
   return (
-    <div className="bg-gray-900 p-4 rounded-md shadow-md">
-      <h1 className="text-3xl font-normal text-white">Text Extraction Results</h1>
+    <div className="bg-gray-900 p-4  shadow-md">
+      
+      <h1 className="text-3xl font-normal text-white px-4">
+        Text Extraction Results
+      </h1>
 
       {/* Extracted Text Box */}
-      <div className="mt-4 bg-gray-850 p-4 rounded-md shadow-md">
-        <h2 className="text-xl font-semibold text-white">Extracted Text:</h2>
+      <div className="mt-4 bg-gray-800 p-4 rounded-md shadow-md">
+        <h2 className="text-3xl font-semibold text-white mb-4">
+          Extracted Text:
+        </h2>
         <div className="overflow-auto" style={{ maxHeight: "200px" }}>
           <pre className="text-white">{result}</pre>
         </div>
@@ -54,8 +62,8 @@ const DataDisp = () => {
 
       {/* IPC Suggestions Box */}
       {ipcSuggestions.length > 0 && (
-        <div className="mt-4 bg-gray-850 p-4 rounded-md shadow-md">
-          <h2 className="text-xl font-semibold text-white">
+        <div className="mt-4 bg-gray-800 p-4 rounded-md shadow-md">
+          <h2 className="text-3xl font-semibold text-white mb-4">
             IPC Suggestions with reasons:
           </h2>
           <ul className="text-white">
@@ -68,7 +76,9 @@ const DataDisp = () => {
 
       {/* Criminal Records Search */}
       <div className="mt-4 bg-gray-850 p-4 rounded-md shadow-md">
-        <h2 className="text-xl font-semibold text-white">Criminal Records Search:</h2>
+        <h2 className="text-xl font-semibold text-white">
+          Criminal Records Search:
+        </h2>
         <div>
           <label className="text-white">Name: </label>
           <input
@@ -85,14 +95,18 @@ const DataDisp = () => {
             onChange={(e) => setAadharCard(e.target.value)}
           />
         </div>
-        <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded" onClick={handleSearch}>Search Records</button>
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+          onClick={handleSearch}
+        >
+          Search Records
+        </button>
         <div>
           <h2 className="text-xl font-semibold text-white">Criminal Record:</h2>
           <p className="text-white">{criminalRecord}</p>
         </div>
       </div>
     </div>
-
   );
 };
 

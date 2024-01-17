@@ -3,25 +3,30 @@ import { FaTwitter, FaGithub, FaLinkedin } from "react-icons/fa";
 
 const Footer = () => {
     const developers = [
-        {
-            name: "Varun",
-            twitter: "https://twitter.com/Varunsingh2534",
-            github: "https://github.com/varun-2538",
-            linkedin: "https://www.linkedin.com/in/varun-singh-422a27206/",
-        },
-        {
-            name: "Abhinav",
-            twitter: "https://twitter.com/MajorTimbWlf21",
-            github: "https://github.com/MajorTimberWolf",
-            linkedin: "https://www.linkedin.com/in/abhinav-rajeev-kumar/",
-        },
-        {
-            name: "Milind",
-            twitter: "https://twitter.com/i_milindmishra",
-            github: "https://github.com/imilindmishra",
-            linkedin: "https://www.linkedin.com/in/milind-mishra-2a3b23257/",
-        },
-        { name: "Vidhi", twitter: "#", github: "#", linkedin: "#" },
+      {
+        name: "Varun",
+        twitter: "https://twitter.com/Varunsingh2534",
+        github: "https://github.com/varun-2538",
+        linkedin: "https://www.linkedin.com/in/varun-singh-422a27206/",
+      },
+      {
+        name: "Abhinav",
+        twitter: "https://twitter.com/MajorTimbWlf21",
+        github: "https://github.com/MajorTimberWolf",
+        linkedin: "https://www.linkedin.com/in/abhinav-rajeev-kumar/",
+      },
+      {
+        name: "Milind",
+        twitter: "https://twitter.com/i_milindmishra",
+        github: "https://github.com/imilindmishra",
+        linkedin: "https://www.linkedin.com/in/milind-mishra-2a3b23257/",
+      },
+      {
+        name: "Vidhi",
+        twitter: "https://x.com/_vidhisingh?t=4tlz6w2QSacEUv6tLI1JlA&s=09",
+        github: "https://github.com/vidhisingh14",
+        linkedin: "https://www.linkedin.com/in/vidhi-singh-75963024a",
+      },
     ];
 
     return (

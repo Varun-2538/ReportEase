@@ -9,6 +9,7 @@ import Footer from "./Footer.js";
 import "./App.css";
 import { NavLink } from "react-router-dom";
 import { ProgressBar } from "react-loader-spinner";
+import Navbar from "./Navbar.js";
 
 function Homepage() {
   const [file, setFile] = useState(null);
@@ -74,15 +75,9 @@ function Homepage() {
 
   return (
     <>
+      <Navbar />
       <div className="main min-h-lvh">
-        <div className="pt-4 px-36">
-          <div
-            className="text-left text-orange-400 text-2xl font-medium"
-            style={{ fontFamily: "Chillax" }}
-          >
-            ReportEase
-          </div>
-        </div>
+        
 
         <div className="grid grid-cols-4 px-36 pt-20">
           <div className="col-span-2 mb-12">
@@ -178,6 +173,7 @@ function Homepage() {
             </div>
           </div>
         </div>
+
 
         <SupportCenterSection />
         <FAQs />
