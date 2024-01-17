@@ -68,11 +68,13 @@ app.post('/extract', upload.single('file'), async (req, res) => {
 
         // Send the extracted text to the Flask API (if needed)
         try {
-            const flaskResponse = await axios.post(
-                `${process.env.FLASK_SERVER_URL}/suggest_ipc`,
+            const flaskServerUrl = process.env.FLASK_SERVER_URL || "http://localhost:5000";
 
-                { extracted_text: extractedText }
-            );
+            const flaskResponse = await axios.post(
+                `${flaskServerUrl}/suggest_ipc`, // Now using the environment variable
+                         { extracted_text: extractedText }
+                    );
+
 
             console.log("IPC Suggestions:", flaskResponse.data.ipc_suggestions);
             res.json({ result: extractedText, ipcSuggestions: flaskResponse.data.ipc_suggestions });
