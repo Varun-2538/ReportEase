@@ -40,7 +40,7 @@ function Homepage() {
 
     try {
       const response = await axios.post(
-        "http://localhost:3000/extract",
+        "http://ec2-13-51-200-112.eu-north-1.compute.amazonaws.com:3000/extract",
         formData,
         {
           headers: {
@@ -53,7 +53,7 @@ function Homepage() {
 
       // After extracting text, send a request to get IPC suggestions from Flask
       const ipcResponse = await axios.post(
-        "http://localhost:5000/suggest_ipc",
+        "https://node-backend-h3xo.onrender.com:5000/suggest_ipc",
         { extracted_text: response.data.result }
       );
 
