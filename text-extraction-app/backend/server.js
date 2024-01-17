@@ -6,6 +6,7 @@ const path = require('path');
 const pdfPoppler = require('pdf-poppler');
 const Tesseract = require('tesseract.js');
 const axios = require('axios');
+const BASE_URL = process.env.BASE_URL || 3001
 
 const app = express();
 const upload = multer({ dest: 'uploads/' });
