@@ -10,8 +10,7 @@ const axios = require('axios');
 const app = express();
 const upload = multer({ dest: 'uploads/' });
 app.use(cors());
-const port = process.env.PORT || 3000;
-
+const port = 3000;
 
 // Function to extract text from PDF using Tesseract with parallel processing
 async function extractTextFromPDF(pdfPath, outputDirectory) {
@@ -68,13 +67,10 @@ app.post('/extract', upload.single('file'), async (req, res) => {
 
         // Send the extracted text to the Flask API (if needed)
         try {
-            const flaskServerUrl = process.env.FLASK_SERVER_URL || "http://localhost:5000";
-
             const flaskResponse = await axios.post(
-                `${flaskServerUrl}/suggest_ipc`, // Now using the environment variable
-                         { extracted_text: extractedText }
-                    );
-
+                "http://127.0.0.1:5000/suggest_ipc", // Replace with your Flask server URL
+                { extracted_text: extractedText }
+            );
 
             console.log("IPC Suggestions:", flaskResponse.data.ipc_suggestions);
             res.json({ result: extractedText, ipcSuggestions: flaskResponse.data.ipc_suggestions });
@@ -90,7 +86,6 @@ app.post('/extract', upload.single('file'), async (req, res) => {
     }
 });
 
-app.listen(port, '0.0.0.0', () => {
-    console.log(`Server running on port ${port}`);
+app.listen(port, () => {
+    console.log(`Server running on http://localhost:${port}`);
 });
-

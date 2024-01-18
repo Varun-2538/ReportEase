@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Papa from "papaparse";
+import jsPDF from "jspdf";
 
 const DataDisp = () => {
   const location = useLocation();
@@ -22,8 +23,6 @@ const DataDisp = () => {
       </li>
     ));
   };
-
-
 
   const handleSearch = () => {
     // Trim leading and trailing spaces from input values
@@ -52,8 +51,58 @@ const DataDisp = () => {
     });
   };
 
+  const handleDownloadPDF = () => {
+    const pdf = new jsPDF();
+    pdf.setFontSize(12); // Reduced font size to fit content within a single page
+
+    const headerImage = new Image();
+    headerImage.src = 'header1.png';
+
+    headerImage.onload = function () {
+      pdf.addImage(headerImage, 'PNG', 10, 10, 190, 40);
+
+      const margin = 10;
+      const pageHeight = pdf.internal.pageSize.height;
+      const availableHeight = pageHeight - margin - 50;
+
+      let yPos = 60;
+      let lineSpacing = 8;
+
+      const addTextWithPageBreak = (text) => {
+        const lines = pdf.splitTextToSize(text, 180);
+        lines.forEach((line) => {
+          if (yPos + lineSpacing > availableHeight) {
+            pdf.addPage();
+            pdf.addImage(headerImage, 'PNG', 10, 10, 190, 40);
+            yPos = 60;
+          }
+          pdf.text(line, margin, yPos);
+          yPos += lineSpacing;
+        });
+      };
+
+      addTextWithPageBreak("IPC Suggestions with reasons:");
+      ipcSuggestions.forEach((suggestion) => {
+        addTextWithPageBreak(`- ${suggestion}`);
+      });
+
+      yPos = yPos > 100 ? yPos : 100;
+      addTextWithPageBreak("Criminal Record:");
+      if (criminalRecord.includes("\n")) {
+        const lines = criminalRecord.split("\\n");
+        lines.forEach((line) => {
+          addTextWithPageBreak(line);
+        });
+      } else {
+        addTextWithPageBreak(criminalRecord);
+      }
+
+      pdf.save("report.pdf");
+    };
+  };
+
   return (
-    <div  className="bg-gray-900 px-36  shadow-md">
+    <div className="bg-gray-900 px-36 shadow-md">
       <p className="text-xl font-bold mb-16 pt-3 text-orange-500 ">
         ReportEase
       </p>
@@ -127,7 +176,6 @@ const DataDisp = () => {
           <h2 className="text-2xl font-semibold text-white">
             Criminal Record:
           </h2>
-          {/* Display criminalRecord with bullet points if it contains line breaks */}
           {criminalRecord.includes("\n") ? (
             <ul className="text-white">
               {formatCriminalRecord(criminalRecord)}
@@ -136,6 +184,16 @@ const DataDisp = () => {
             <p className="text-white mt-2">{criminalRecord}</p>
           )}
         </div>
+      </div>
+
+      {/* Download Button */}
+      <div className="mt-4 text-center">
+        <button
+          className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
+          onClick={handleDownloadPDF}
+        >
+          Download PDF
+        </button>
       </div>
     </div>
   );
