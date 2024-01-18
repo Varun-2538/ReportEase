@@ -1,7 +1,7 @@
 # ReportEase: An AI-based FIR Analysis Project
 
 ReportEase is an Automated Legal Insight Project that uses Mistral AI, an open source Large Language Model (LLM) finetuned on IPC & CrPC Datasets, to analyze First Information Reports (FIRs) and generate insightful reports. The application also allows users to search the Crime and Criminal Tracking Network and Systems (CCTNS) database for relevant information.
-
+## Presentation Link: [Presentation](https://tome.app/abhinavs-workspace-d2a/team-gallants-presentation-clrg93wpo3dqkmt62zss5ls4c)
 ## Features
 
 - Upload PDF or image files of FIRs and extract the text using optical character recognition (OCR) with the help of Tesseract.
