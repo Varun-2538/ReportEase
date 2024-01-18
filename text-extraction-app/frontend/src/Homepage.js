@@ -152,7 +152,7 @@ function Homepage() {
           <div></div>
         )}
 
-        <div className="px-36">
+        <div id="analytics" className="px-36">
           <div className="mt-20 mb-6">
             <h1 className="text-left text-slate-200 text-3xl font-normal">
               Crime-Analytics Based on CCTNS Data
@@ -162,7 +162,7 @@ function Homepage() {
             </h1>
           </div>
 
-          <div className="pb-8 grid gap-2 xl:grid-cols-2 md:grid-cols-1">
+          <div  className="pb-8 grid gap-2 xl:grid-cols-2 md:grid-cols-1">
             <div className="p-4 w-full shadow-lg rounded-lg bg-gray-900">
               <Bargraph />
             </div>

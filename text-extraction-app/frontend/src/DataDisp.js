@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { useLocation } from "react-router-dom";
 import Papa from "papaparse";
 import jsPDF from "jspdf";
+import Footer from "./Footer";
 
 const DataDisp = () => {
   const location = useLocation();
@@ -140,6 +141,7 @@ const DataDisp = () => {
         <h2 className="text-2xl font-semibold text-white">
           Criminal Records Search:
         </h2>
+        <p className="text-white"> Sample Name: Neelam, Sample Aadhar: 876543210890</p>
         <div className="flex flex-col space-y-2">
           <label htmlFor="name" className="text-white font-medium">
             Name:
@@ -187,7 +189,7 @@ const DataDisp = () => {
       </div>
 
       {/* Download Button */}
-      <div className="mt-4 text-center">
+      <div className="mt-4 text-center pb-4">
         <button
           className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded transition duration-150 ease-in-out"
           onClick={handleDownloadPDF}
@@ -195,6 +197,7 @@ const DataDisp = () => {
           Download PDF
         </button>
       </div>
+      <Footer />
     </div>
   );
 };
