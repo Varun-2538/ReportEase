@@ -8,14 +8,12 @@ const SupportCenterSection = () => {
         <div className="flex items-center">
           <div className="flex-1 ml-4">
             <p className="text-xl mb-4 mr-4">
-              Our project, conceived and developed for the Rajasthan Police
-              Hackathon, stands as a testament to our commitment to public
-              safety and judicial efficiency.
+              Our project, conceived and developed for Jugaad Hacks, stands as a testament to making the learning process of law students easier and helping them gain insights to legal complexities.
             </p>
             <p className="text-xl mr-4">
               We've poured our academic knowledge and youthful enthusiasm into
               building an AI model that simplifies legal processes and empowers
-              law enforcement.
+              law enforcement knowledge for law students.
             </p>
           </div>
           <div className="flex-1">
