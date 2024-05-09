@@ -2,9 +2,16 @@
 from huggingface_hub import InferenceClient  # For loading and using text generation models
 import os
 import re
+from dotenv import load_dotenv #type:ignore
+
+load_dotenv()
+print("Environment Keys Loaded:", os.getenv('HUGGINGFACE_API_KEY'))  # This should print your API key if loaded correctly
 
 # Load the text generation model from Hugging Face Hub
-text_generation_client = InferenceClient("mistralai/Mixtral-8x7B-Instruct-v0.1")
+hf_api_key = os.getenv('HUGGINGFACE_API_KEY')
+if not hf_api_key:
+    raise ValueError("Hugging Face API Key not set in environment variable")
+text_generation_client = InferenceClient(token=hf_api_key, model="mistralai/Mixtral-8x7B-Instruct-v0.1")
 
 # Define a function to format prompts for the model
 def format_prompt_for_model(user_prompt):
@@ -31,7 +38,7 @@ def format_prompt_for_model(user_prompt):
 def generate_legal_suggestions(
     prompt,
     creativity_level=0.2,  # Controls the randomness of the generated text
-    max_tokens_to_generate=512,
+    max_tokens_to_generate=1024,
     top_p_filtering_ratio=0.96,  # Controls the likelihood of selecting common words
     repetition_penalty=1.0,
 ):
