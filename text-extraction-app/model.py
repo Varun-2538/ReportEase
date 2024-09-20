@@ -2,7 +2,7 @@
 from huggingface_hub import InferenceClient  # For loading and using text generation models
 import os
 import re
-from dotenv import load_dotenv #type:ignore
+from dotenv import load_dotenv  # type:ignore
 
 load_dotenv()
 print("Environment Keys Loaded:", os.getenv('HUGGINGFACE_API_KEY'))  # This should print your API key if loaded correctly
@@ -11,7 +11,7 @@ print("Environment Keys Loaded:", os.getenv('HUGGINGFACE_API_KEY'))  # This shou
 hf_api_key = os.getenv('HUGGINGFACE_API_KEY')
 if not hf_api_key:
     raise ValueError("Hugging Face API Key not set in environment variable")
-text_generation_client = InferenceClient(token=hf_api_key, model="mistralai/Mixtral-8x7B-Instruct-v0.1")
+text_generation_client = InferenceClient(token=hf_api_key, model="mistralai/Mistral-Nemo-Instruct-2407")
 
 # Define a function to format prompts for the model
 def format_prompt_for_model(user_prompt):
@@ -24,17 +24,19 @@ def format_prompt_for_model(user_prompt):
     Returns:
         A formatted prompt string that includes system context and instructions.
     """
-
+    
+    # Updated system context with reference to Bharatiya Nyaya Sanhita, 2023
     system_context_prompt = (
-        "You are a Lawyer with extreme knowledge in the Indian Penal Code (IPC) Sections and Code of Criminal Procedure (CRPC)."
-        " Using the extracted text, give 4 applicable IPC Section [Starting from 100] and 2 CRPC Sections"
-        " while stating the reason for your selection. End with 'I believe you should do further investigate the case to cross-check my suggestions.'"
+        "You are a Lawyer with extensive knowledge in the Bharatiya Nyaya Sanhita, 2023, which replaces the Indian Penal Code (IPC)"
+        " and the Code of Criminal Procedure (CrPC). Using the extracted text, give 4 applicable Sections from the Bharatiya Nyaya Sanhita"
+        " (starting from Section 100) and 2 sections from relevant procedural laws under the Bharatiya Nagarik Suraksha Sanhita, 2023."
+        " Additionally, explain the reason for your selections. End with the statement 'I recommend further investigation of the case to cross-check my suggestions.'"
     )
     combined_prompt = f"<s>[SYS] {system_context_prompt} [/SYS]\n[INST] {user_prompt} [/INST]"
     return combined_prompt
 
 
-# Define a function to generate text using the model
+# Define a function to generate legal suggestions based on the new legal reform
 def generate_legal_suggestions(
     prompt,
     creativity_level=0.2,  # Controls the randomness of the generated text
@@ -84,6 +86,7 @@ def generate_legal_suggestions(
     for text_segment in generated_text_stream:  # Build the output text incrementally
         final_output_text += text_segment.token.text
 
-    extracted_ipc_sections = re.findall(r"Section \d+[A-Z]*", final_output_text)
+    # Extract the sections from Bharatiya Nyaya Sanhita (and possibly Bharatiya Nagarik Suraksha Sanhita)
+    extracted_sections = re.findall(r"Section \d+[A-Z]*", final_output_text)
 
     return final_output_text
