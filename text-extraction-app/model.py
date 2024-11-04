@@ -1,92 +1,111 @@
 # Import necessary libraries
-from huggingface_hub import InferenceClient  # For loading and using text generation models
+from openai import OpenAI
 import os
+from dotenv import load_dotenv  # type: ignore
+import json
 import re
-from dotenv import load_dotenv  # type:ignore
+import fitz
 
+# Load environment variables
 load_dotenv()
-print("Environment Keys Loaded:", os.getenv('HUGGINGFACE_API_KEY'))  # This should print your API key if loaded correctly
+print("Environment Keys Loaded:", os.getenv("OPENAI_API_KEY"))
 
-# Load the text generation model from Hugging Face Hub
-hf_api_key = os.getenv('HUGGINGFACE_API_KEY')
-if not hf_api_key:
-    raise ValueError("Hugging Face API Key not set in environment variable")
-text_generation_client = InferenceClient(token=hf_api_key, model="mistralai/Mistral-Nemo-Instruct-2407")
+# Initialize OpenAI client
+api_key = os.getenv("OPENAI_API_KEY")
+if not api_key:
+    raise ValueError("OpenAI API Key not set in environment variable")
+client = OpenAI(api_key=api_key)
 
-# Define a function to format prompts for the model
-def format_prompt_for_model(user_prompt):
+
+def extract_text_from_pdf(pdf_path):
     """
-    Formats a prompt for the text generation model, providing context and instructions.
-
-    Args:
-        user_prompt: The specific text prompt to be processed by the model.
-
-    Returns:
-        A formatted prompt string that includes system context and instructions.
+    Extracts all text from the PDF file located at pdf_path.
     """
+    text = ""
+    try:
+        with fitz.open(pdf_path) as pdf:
+            for page_num in range(pdf.page_count):
+                page = pdf[page_num]
+                text += page.get_text()
+    except Exception as e:
+        print(f"Error extracting text from PDF: {e}")
+    return text
+
+system_context_prompt = (
+    "You are an experienced legal professional with specialized expertise in Indian criminal law "
+    "and procedural jurisprudence. Your knowledge base includes the Bharatiya Nyaya Sanhita (BNS), 2023, "
+    "and the Bharatiya Nagarik Suraksha Sanhita (BNSS), 2023. Relevant sections from these legal codes "
+    "are included below for your reference.\n\n"
     
-    # Updated system context with reference to Bharatiya Nyaya Sanhita, 2023
-    system_context_prompt = (
-        "You are a Lawyer with extensive knowledge in the Bharatiya Nyaya Sanhita, 2023, which replaces the Indian Penal Code (IPC)"
-        " and the Code of Criminal Procedure (CrPC). Using the extracted text, give 4 applicable Sections from the Bharatiya Nyaya Sanhita"
-        " (starting from Section 100) and 2 sections from relevant procedural laws under the Bharatiya Nagarik Suraksha Sanhita, 2023."
-        " Additionally, explain the reason for your selections. End with the statement 'I recommend further investigation of the case to cross-check my suggestions.'"
-    )
-    combined_prompt = f"<s>[SYS] {system_context_prompt} [/SYS]\n[INST] {user_prompt} [/INST]"
-    return combined_prompt
+    "Refer to these sections to provide accurate, detailed legal analyses. When analyzing cases, "
+    "identify and cite specific sections that are most relevant to the user's prompt and provide "
+    "a legal explanation based on these documents. Explain the legal reasoning behind each section's applicability, "
+    "considering both substantive and procedural aspects. If recent amendments or judicial interpretations "
+    "are available in the provided context, include those as well.\n\n"
+    
+    "Use professional ethics by:\n"
+    "- Acknowledging limitations in complex scenarios\n"
+    "- Suggesting consultation with practicing advocates when necessary\n"
+    "- Avoiding definitive conclusions without complete facts\n"
+    "- Considering constitutional rights and principles\n\n"
+    
+    "For each analysis, provide:\n"
+    "- 4 applicable Sections from the Bharatiya Nyaya Sanhita\n"
+    "- 2 relevant procedural sections from the Bharatiya Nagarik Suraksha Sanhita\n"
+    "- Clear reasoning for each section's applicability\n"
+    "- Potential procedural requirements or limitations\n\n"
+    
+    "End each response with: 'I recommend further investigation of the case to cross-check my suggestions.'\n\n"
+    
+    "Legal References:\n"  # Here, the extracted PDF text can be appended
+)
 
+def format_prompt_for_model(user_prompt):
+    messages = [
+        {"role": "system", "content": system_context_prompt},
+        {"role": "user", "content": user_prompt},
+    ]
 
-# Define a function to generate legal suggestions based on the new legal reform
+    return messages
+
 def generate_legal_suggestions(
     prompt,
-    creativity_level=0.2,  # Controls the randomness of the generated text
+    pdf_path="resources/a2023-45.pdf",
+    creativity_level=0.2,
     max_tokens_to_generate=1024,
-    top_p_filtering_ratio=0.96,  # Controls the likelihood of selecting common words
-    repetition_penalty=1.0,
+    top_p_filtering_ratio=0.96,
+    model="gpt-4o-mini"
 ):
-    """
-    Generates text using the loaded model, with options for controlling the output.
+    # Extract text from the PDF
+    pdf_text = extract_text_from_pdf(pdf_path)
+    
+    # Append PDF text to the system context
+    system_context_prompt_with_pdf = system_context_prompt + "\n\n" + pdf_text
 
-    Args:
-        prompt: The formatted prompt string to be used for text generation.
-        creativity_level: Controls the randomness of the generated text (higher = more creative).
-        max_tokens_to_generate: The maximum number of tokens to generate.
-        top_p_filtering_ratio: Controls the likelihood of selecting common words (higher = less surprising).
-        repetition_penalty: Discourages the model from repeating itself.
+    # Format messages for the chat completion
+    messages = [
+        {"role": "system", "content": system_context_prompt_with_pdf},
+        {"role": "user", "content": prompt}
+    ]
+    
+    # Create the chat completion with OpenAI
+    try:
+        response = client.chat.completions.create(
+            model=model,
+            messages=messages,
+            temperature=creativity_level,
+            max_tokens=max_tokens_to_generate,
+            top_p=top_p_filtering_ratio,
+            presence_penalty=0,
+            frequency_penalty=0
+        )
+        
+        # Extract the generated text from the response
+        final_output_text = response.choices[0].message.content
+        
+        return final_output_text
+        
+    except Exception as e:
+        print(f"Error generating response: {str(e)}")
+        return None
 
-    Returns:
-        The generated text as a string.
-    """
-
-    # Ensure creativity_level and top_p_filtering_ratio are floats
-    creativity_level = float(creativity_level)
-    if creativity_level < 1e-2:
-        creativity_level = 1e-2
-    top_p_filtering_ratio = float(top_p_filtering_ratio)
-
-    # Create a dictionary of generation parameters
-    generation_parameters = dict(
-        temperature=creativity_level,
-        max_new_tokens=max_tokens_to_generate,
-        top_p=top_p_filtering_ratio,
-        repetition_penalty=repetition_penalty,
-        do_sample=True,
-        seed=42,
-    )
-
-    # Format the prompt using the prompter function
-    model_ready_prompt = format_prompt_for_model(prompt)
-
-    # Generate text using the model's text_generation method
-    generated_text_stream = text_generation_client.text_generation(
-        model_ready_prompt, **generation_parameters, stream=True, details=True, return_full_text=True
-    )
-
-    final_output_text = ""
-    for text_segment in generated_text_stream:  # Build the output text incrementally
-        final_output_text += text_segment.token.text
-
-    # Extract the sections from Bharatiya Nyaya Sanhita (and possibly Bharatiya Nagarik Suraksha Sanhita)
-    extracted_sections = re.findall(r"Section \d+[A-Z]*", final_output_text)
-
-    return final_output_text

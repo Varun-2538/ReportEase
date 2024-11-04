@@ -48,16 +48,22 @@ def suggest_ipc():
         if not extracted_text:
             return jsonify({'error': 'No extracted text provided'}), 400
 
-        # Generate IPC suggestions using the LLM model
-        ipc_suggestions = generate_legal_suggestions(extracted_text)
-
-        return jsonify({'ipc_suggestions': ipc_suggestions})
+        # Path to your PDF file
+        pdf_path = "backend/resources/a2023-45.pdf"
+        
+        # Generate IPC suggestions using the LLM model, including PDF context
+        ipc_suggestions = generate_legal_suggestions(extracted_text, pdf_path=pdf_path)
+        
+        # Ensure JSON serialization
+        if isinstance(ipc_suggestions, str):
+            ipc_suggestions = {'ipc_suggestions': ipc_suggestions}
+        
+        return jsonify(ipc_suggestions)
     except Exception as e:
+        print(f"Error: {str(e)}")  # Log the error to your backend console
         return jsonify({'error': str(e)}), 500
+
 
     
 if __name__ == '__main__':
     app.run(debug=True)
-
-# TODO: add routing to files, probably with flask. 
-# TODO: Also uncomment IPC_Sections generation after filepath cleanup
