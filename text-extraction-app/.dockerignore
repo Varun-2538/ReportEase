@@ -1,0 +1,12 @@
+node_modules
+npm-debug.log
+uploads/*
+output/*
+.git
+.gitignore
+frontend
+app.py
+model.py
+requirements.txt
+__pycache__
+.env

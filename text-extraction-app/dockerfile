@@ -1,0 +1,33 @@
+# Use an official Node.js runtime as the base image
+FROM node:18
+
+# Install system dependencies for node-tesseract-ocr
+RUN apt-get update && apt-get install -y \
+    tesseract-ocr \
+    tesseract-ocr-eng \
+    tesseract-ocr-hin \
+    wget \
+    && rm -rf /var/lib/apt/lists/*
+
+# Set the working directory inside the container
+WORKDIR /usr/src/app
+
+# Download Tesseract language data files for eng and hin
+RUN wget -O eng.traineddata https://github.com/tesseract-ocr/tessdata/raw/main/eng.traineddata \
+    && wget -O hin.traineddata https://github.com/tesseract-ocr/tessdata/raw/main/hin.traineddata
+
+# Copy package.json and package-lock.json for the backend (from the root directory)
+COPY package.json package-lock.json ./
+
+# Install Node.js dependencies (including node-tesseract-ocr)
+RUN npm install
+
+# Copy the backend source code and necessary directories from the backend/ subdirectory
+COPY backend/server.js ./
+COPY backend/uploads/ ./uploads/
+
+# Expose the port the backend runs on
+EXPOSE 3000
+
+# Command to run the backend application
+CMD ["node", "server.js"]
