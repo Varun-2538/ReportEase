@@ -1,0 +1,37 @@
+name: CI/CD Pipeline for Node.js Backend
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: self-hosted  # Use the self-hosted runner on EC2
+    steps:
+      # Step 1: Check out the repository code
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      # Step 2: Log in to Docker Hub
+      - name: Log in to Docker Hub
+        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+
+      # Step 3: Build the Docker image
+      - name: Build Docker image
+        run: docker build -f dockerfile -t varun56/reportease:latest .
+
+      # Step 4: Push the Docker image to Docker Hub
+      - name: Push Docker image to Docker Hub
+        run: docker push varun56/reportease:latest
+
+      # Step 5: Deploy the updated image on EC2
+      - name: Deploy to EC2
+        run: |
+          # Stop and remove the existing container if it exists
+          docker stop reportease-backend || true
+          docker rm reportease-backend || true
+          # Pull the new image
+          docker pull varun56/reportease:latest
+          # Run the new container
+          docker run -d -p 3000:3000 -v uploads:/usr/src/app/uploads --name reportease-backend varun56/reportease:latest
