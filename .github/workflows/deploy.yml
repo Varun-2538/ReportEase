@@ -21,7 +21,7 @@ jobs:
       - name: Build Docker image
         run: docker build -f Dockerfile -t varun56/reportease:latest .
 
-      # Step 4: Push the Docker image to Docker Hub
+     # Step 4: Push the Docker image to Docker Hub
       - name: Push Docker image to Docker Hub
         run: docker push varun56/reportease:latest
 
