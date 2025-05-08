@@ -15,7 +15,7 @@ jobs:
 
       # Step 2: Log in to Docker Hub
       - name: Log in to Docker Hub
-        run: echo "${{ secrets.DOCKERHUB_PASSWORD }}" | docker login -u "${{ secrets.DOCKERHUB_USERNAME }}" --password-stdin
+        run: echo "dckr_pat_8o_1rquHsfhnzAHDgF2eVxJnL1k" | docker login -u "varun56" --password-stdin
 
       # Step 3: Build the Docker image
       - name: Build Docker image
